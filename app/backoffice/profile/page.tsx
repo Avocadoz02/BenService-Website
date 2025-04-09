@@ -13,8 +13,16 @@ export default function Page() {
     const handleSave = async () => {
         if (username === '') {
             Swal.fire({
-                title: 'กรุณาระบุ Username',
-                icon: 'error'
+                icon: 'error',
+                title: 'กรุณาระบุ Username'
+            });
+            return;
+        }
+
+        if (password === '' || confirmPassword === '') {
+            Swal.fire({
+                icon: 'error',
+                title: 'กรุณาระบุ Password'
             });
             return;
         }
@@ -22,8 +30,8 @@ export default function Page() {
         if (password !== '' && confirmPassword !== '') {
             if (password !== confirmPassword) {
                 Swal.fire({
-                    title: 'รหัสผ่านไม่ตรงกัน',
-                    icon: 'error'
+                    icon: 'error',
+                    title: 'รหัสผ่านไม่ตรงกัน'
                 });
                 return;
             }

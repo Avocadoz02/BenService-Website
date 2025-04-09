@@ -8,7 +8,7 @@ export function Sidebar() {
         { title: 'สถานะการซ่อม', href: '/dashboard/repair-status', icon: 'fa-solid fa-gear'},
         { title: 'สถิติการซ่อมของช่าง', href: '/dashboard/mecthanic-report', icon: 'fa-solid fa-right-from-bracket'},
         { title: 'รายงานรายได้', href: '/dashboard/income-report', icon: 'fa-solid fa-money-bill'},
-        { title: 'ทะเบียนวัสดุ อุปกรณ์', href: '/dashboard/devices', icon: 'fa-solid fa-box'},
+        { title: 'ทะเบียนวัสดุ อุปกรณ์', href: '/backoffice/device', icon: 'fa-solid fa-box'},
         { title: 'ข้อมูลร้าน', href: '/dashboard/company', icon: 'fa-solid fa-shop'},
     ];
     return (
