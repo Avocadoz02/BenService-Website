@@ -3,7 +3,7 @@ import Link from "next/link";
 export function Sidebar() {
     const menuItem = [
         { title: 'Dasboard', href: '/dashboard', icon: 'fa-solid fa-chart-simple'},
-        { title: 'พนักงานร้าน', href: '/dashboard/user', icon: 'fa-solid fa-users'},
+        { title: 'พนักงานร้าน', href: '/backoffice/user', icon: 'fa-solid fa-users'},
         { title: 'บันทึกการซ่อม', href: '/dashboard/repair-record', icon: 'fa-solid fa-screwdriver'},
         { title: 'สถานะการซ่อม', href: '/dashboard/repair-status', icon: 'fa-solid fa-gear'},
         { title: 'สถิติการซ่อมของช่าง', href: '/dashboard/mecthanic-report', icon: 'fa-solid fa-right-from-bracket'},

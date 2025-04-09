@@ -87,12 +87,7 @@ export default function Page() {
 
     const handleDelete = async (id: string) => {
         try {
-            const button = await Swal.fire({
-                icon: 'warning',
-                title: 'ยืนยันการลบ',
-                text: 'คุณต้องการลบข้อมูลนี้หรือไม่',
-                showCancelButton: true
-            });
+            const button = await config.confirmDialog();
 
             if (button.isConfirmed) {
                 await axios.delete(`${config.apiUrl}/api/device/remove/${id}`);
@@ -135,7 +130,7 @@ export default function Page() {
                                 <td>{item.serial}</td>
                                 <td>{dayjs(item.expireDate).format('DD/MM/YYYY')}</td>
                                 <td>{item.remark}</td>
-                                <td>
+                                <td className="text-center">
                                     <button className="btn-edit" onClick={() => handleEdit(item)}>
                                         <i className="fa-solid fa-pen-to-square"></i>
                                     </button>
