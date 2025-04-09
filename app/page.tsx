@@ -33,6 +33,9 @@ export default function Home() {
 
       if (response.data.token !== undefined) {
         localStorage.setItem(config.tokenKey, response.data.token);
+        localStorage.setItem('bun_service_name',response.data.user.username)
+        localStorage.setItem('bun_service_level',response.data.user.level)
+
         router.push('/backoffice/dashboard');
       } else {
         Swal.fire({
@@ -65,7 +68,7 @@ export default function Home() {
             <i className="fa fa-lock mr-2"></i>
             Password
           </div>
-          <input type="text" className="form-control" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <input type="password" className="form-control" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
           <button type="submit" className="btn mt-5 text-xl">
             <i className="fa fa-sign-in-alt mr-2"></i>
             Sign In
