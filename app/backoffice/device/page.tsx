@@ -83,6 +83,8 @@ export default function Page() {
         setName(item.name)
         setExpireDate(item.expireDate)
         setRemark(item.remark)
+
+        setShowModal(true);
     }
 
     const handleDelete = async (id: string) => {
