@@ -23,7 +23,18 @@ export default function Page() {
 
     useEffect(() => {
         fetchUsers();
-        fetchDepartments();
+
+        const initializeData = async () => {
+            await fetchDepartments();
+
+            if (departments.length > 0) {
+                const initializeDepartmentId = (departments[0] as any).id;
+                setDepartmentId(initializeDepartmentId);
+                await fetchSections(initializeDepartmentId);
+            }
+        }
+
+        initializeData();
     }, []);
 
     const fetchDepartments = async () => {
@@ -72,7 +83,7 @@ export default function Page() {
                 username: username,
                 password: password,
                 level: level,
-                sectionId: sectionId
+                sectionId: parseInt(sectionId+"")
             }
 
             if (id == '') {
@@ -98,13 +109,21 @@ export default function Page() {
         }
     }
 
-    const handleEdit = (user: any) => {
+    const handleEdit = async (user: any) => {
         setId(user.id);
         setUsername(user.username);
         setPassword('');
         setConfirmPassword('');
         setLevel(user.level);
         setShowModal(true);
+
+        const selectedDepartmentId = user?.section?.department?.id ?? (departments[0] as any).id;
+        setDepartmentId(selectedDepartmentId);
+
+        await fetchSections(selectedDepartmentId);
+        
+        const sectionId = user?.section?.id;
+        setSectionId(sectionId);
     }
 
     const handleDelete = async (id: string) => {
@@ -136,6 +155,8 @@ export default function Page() {
                     <thead>
                         <tr>
                             <th>Username</th>
+                            <th>Department</th>
+                            <th>Section</th>
                             <th style={{ width: '150px'}}>Level</th>
                             <th style={{width: '220px'}}>Action</th>
                         </tr>
@@ -144,6 +165,8 @@ export default function Page() {
                         {users.map((user: any) => (
                             <tr key={user.id}>
                                 <td>{user.username}</td>
+                                <td>{user.section?.department?.name}</td>
+                                <td>{user.section?.name}</td>
                                 <td>{user.level}</td>
                                 <td className="text-center">
                                     <button className="btn-edit" 

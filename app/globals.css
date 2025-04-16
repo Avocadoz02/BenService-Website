@@ -86,7 +86,7 @@ button {
 }
 
 .table th {
-  @apply text-left p-4 bg-gray-950 text-gray-400;
+  @apply text-center p-4 bg-gray-950 text-gray-400;
 }
 
 .table th:first-child {
@@ -98,7 +98,7 @@ button {
 }
 
 .table tbody td {
-  @apply p-4 bg-gray-900 text-gray-400 border-b border-gray-700;
+  @apply text-center p-4 bg-gray-900 text-gray-400 border-b border-gray-700;
 }
 
 .table tbody tr:last-child td:first-child {

@@ -2,14 +2,14 @@ import Link from "next/link";
 
 export function Sidebar() {
     const menuItem = [
-        { title: 'Dasboard', href: '/dashboard', icon: 'fa-solid fa-chart-simple'},
+        { title: 'Dasboard', href: '/backoffice/dashboard', icon: 'fa-solid fa-chart-simple'},
         { title: 'พนักงานร้าน', href: '/backoffice/user', icon: 'fa-solid fa-users'},
-        { title: 'บันทึกการซ่อม', href: '/dashboard/repair-record', icon: 'fa-solid fa-screwdriver'},
-        { title: 'สถานะการซ่อม', href: '/dashboard/repair-status', icon: 'fa-solid fa-gear'},
-        { title: 'สถิติการซ่อมของช่าง', href: '/dashboard/mecthanic-report', icon: 'fa-solid fa-right-from-bracket'},
-        { title: 'รายงานรายได้', href: '/dashboard/income-report', icon: 'fa-solid fa-money-bill'},
+        { title: 'บันทึกการซ่อม', href: '/backoffice/repair-record', icon: 'fa-solid fa-screwdriver'},
+        { title: 'สถานะการซ่อม', href: '/backoffice/repair-status', icon: 'fa-solid fa-gear'},
+        { title: 'สถิติการซ่อมของช่าง', href: '/backoffice/mecthanic-report', icon: 'fa-solid fa-right-from-bracket'},
+        { title: 'รายงานรายได้', href: '/backoffice/income-report', icon: 'fa-solid fa-money-bill'},
         { title: 'ทะเบียนวัสดุ อุปกรณ์', href: '/backoffice/device', icon: 'fa-solid fa-box'},
-        { title: 'ข้อมูลร้าน', href: '/dashboard/company', icon: 'fa-solid fa-shop'},
+        { title: 'ข้อมูลร้าน', href: '/backoffice/company', icon: 'fa-solid fa-shop'},
     ];
     return (
         <aside className="sidebar">
