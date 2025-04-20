@@ -156,7 +156,7 @@ export default function Page() {
                         เพิ่มข้อมูลการซ่อม
                 </button>
 
-                <table className="table table-striped mt-5">
+                <table className="table mt-5">
                     <thead>
                         <tr>
                             <th>ชื่อลูกค้า</th>
