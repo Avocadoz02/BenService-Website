@@ -19,7 +19,7 @@ export default function Page() {
         { value: 'repairing', label: 'กำลังซ่อม' },
         { value: 'done', label: 'ซ่อมเสร็จแล้ว' },
         { value: 'cancle', label: 'ยกเลิก' },
-        { value: 'completed', label: 'ลูกค้ามารับอุปกรณ์' },
+        { value: 'complete', label: 'ลูกค้ามารับอุปกรณ์' },
     ]);
     const [statusForFilter, setStatusForFilter] = useState('');
     const [tempRepairRecords, setTempRepairRecords] = useState([]);
@@ -173,6 +173,7 @@ export default function Page() {
                     <div>เลือกช่างซ่อม</div>
                     <div>
                         <select className='form-control' value={engineerId} onChange={(e) => setEngineerId(Number(e.target.value))}>
+                            <option value="">-- เลือกช่างซ่อม --</option>
                             {engineers.map((engineer: any) => (
                                 <option value={engineer.id} key={engineer.id}>
                                     {engineer.username}

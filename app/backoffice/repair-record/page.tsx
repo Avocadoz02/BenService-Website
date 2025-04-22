@@ -23,6 +23,12 @@ export default function Page() {
     const [expireDate, setExpireDate] = useState('');
     const [id, setId] = useState(0);
 
+    // รับเครื่อง
+    const [showModalReceive, setShowModalReceive] = useState(false);
+    const [recieveCustomerName, setRecieveCustomerName] = useState('');
+    const [recieveAmount, setRecieveAmount] = useState(0);
+    const [recieveId, setRecieveId] = useState(0);
+
     useEffect(() => {
         fetchDevices();
         fetchRepairRecord();
@@ -116,7 +122,7 @@ export default function Page() {
                 return 'ยกเลิก';
             case 'done':
                 return 'ซ่อมเสร็จแล้ว';
-            case 'completed':
+            case 'complete':
                 return 'ลูกค้ามารับอุปกรณ์';
             default:
                 return 'รอซ่อม';
@@ -147,6 +153,29 @@ export default function Page() {
         }
     }
 
+    const openModalReceive = (repairRecord: any) => {
+        setShowModalReceive(true);
+        setRecieveCustomerName(repairRecord.customerName);
+        setRecieveAmount(repairRecord.amount ?? 0);
+        setRecieveId(repairRecord.id);
+    }
+    const closeModalReceive = () => {
+        setShowModalReceive(false);
+        setRecieveId(0); // clear Id
+    }
+
+    const handleReceive = async () => {
+        const payload = {
+            id: recieveId,
+            amount: recieveAmount
+        }
+
+        await axios.put(`${config.apiUrl}/api/repairRecord/receive`, payload);
+
+        fetchRepairRecord();
+        closeModalReceive();
+    }
+
     return (
         <div className="card">
             <h1>บันทึกการซ่อม</h1>
@@ -166,7 +195,8 @@ export default function Page() {
                             <th>วันที่รับซ่อม</th>
                             <th>วันที่ซ่อมเสร็จ</th>
                             <th>สถานะ</th>
-                            <th style={{width: '220px'}}>Action</th>
+                            <th style={{width: "100px"}}>ค่าบริการ</th>
+                            <th style={{width: '330px'}}>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -179,7 +209,12 @@ export default function Page() {
                                 <td>{dayjs(repairRecord.createdAt).format('DD/MM/YYYY')}</td>
                                 <td>{repairRecord.endJobDate ? dayjs(repairRecord.endJobDate).format('DD/MM/YYYY') : '-'}</td>
                                 <td>{getStatusName(repairRecord.status)}</td>
+                                <td className="text-right!">{repairRecord.amount?.toLocaleString()}</td>
                                 <td>
+                                    <button className="btn-edit" onClick={() => openModalReceive(repairRecord)}>
+                                        <i className="fa-solid fa-check mr-2"></i>
+                                        รับเครื่อง
+                                    </button>
                                     <button className="btn-edit" onClick={() => handleEdit(repairRecord)}>
                                         <i className="fa-solid fa-edit mr-2"></i>
                                         แก้ไข
@@ -259,6 +294,26 @@ export default function Page() {
                 className="form-control" />
 
                 <button className="btn-primary mt-4" onClick={handleSave}>
+                    <i className="fa-solid fa-check mr-3"></i>
+                    บันทึก
+                </button>
+            </Modal>
+
+            <Modal title="รับเครื่อง" isOpen={showModalReceive} onClose={() => closeModalReceive()} size="xl">
+                <div className="flex gap-4">
+                    <div className="w-1/2">
+                        <div>ชื่อลูกค้า</div>
+                        <input type="text" className="form-control disabled"
+                        value={recieveCustomerName} readOnly/>
+                    </div>
+                    <div className="w-1/2">
+                        <div>ค่าบริการ</div>
+                        <input type="text" className="form-control text-right"
+                        value={recieveAmount} 
+                        onChange={(e) => setRecieveAmount(Number(e.target.value))} />
+                    </div>
+                </div>
+                <button className="btn-primary mt-4" onClick={handleReceive}>
                     <i className="fa-solid fa-check mr-3"></i>
                     บันทึก
                 </button>

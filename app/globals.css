@@ -63,8 +63,10 @@ button {
   @apply bg-gray-800 p-8 rounded-2xl shadow-md h-full;
 }
 
-.card input, .card select {
-  @apply w-full mt-2;
+.card {
+    input, select, textarea {
+      @apply w-full mt-2;
+  } 
 }
 
 .card h1 {
