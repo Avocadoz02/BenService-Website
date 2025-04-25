@@ -29,7 +29,7 @@ export default function Home() {
         password
       }
 
-      const response = await axios.post(`http://localhost:5000/api/user/signin`, payload);
+      const response = await axios.post(`${config.apiUrl}/api/user/signin`, payload);
 
       if (response.data.token !== undefined) {
         localStorage.setItem(config.tokenKey, response.data.token);

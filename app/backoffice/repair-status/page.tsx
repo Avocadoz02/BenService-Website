@@ -25,6 +25,7 @@ export default function Page() {
     const [tempRepairRecords, setTempRepairRecords] = useState([]);
     const [engineers, setEngineers] = useState([]);
     const [engineerId, setEngineerId] = useState(0);
+    const [endJobDate, setEndJobDate] = useState('');
 
     useEffect(() => {
         fetchRepairRecords();
@@ -59,13 +60,12 @@ export default function Page() {
     const handleEdit = (id: number) => {
         const repairRecord = repairRecords.find((repairRecord: any) => repairRecord.id === id) as any;
 
-        console.log(repairRecord)
-
         if (repairRecord) {
             setId(id);
             setEngineerId(repairRecord?.engineerId ?? 0);
             setStatus(repairRecord?.status ?? '');
             setSolving(repairRecord?.solving ?? '');
+            setEndJobDate(repairRecord?.endJobDate ? dayjs(repairRecord?.endJobDate).format('YYYY-MM-DD') : '');
             setShowModal(true);
         }
     }
@@ -75,7 +75,8 @@ export default function Page() {
             const payload = {
                 status: status,
                 solving: solving,
-                engineerId: engineerId
+                engineerId: engineerId,
+                endJobDate: endJobDate == '' ? undefined : new Date(endJobDate)
             };
 
             await axios.put(`${config.apiUrl}/api/repairRecord/updateStatus/${id}`, payload);
@@ -138,7 +139,7 @@ export default function Page() {
                             <tr key={repairRecord.id}>
                                 <td>{repairRecord.customerName}</td>
                                 <td>{repairRecord.customerPhone}</td>
-                                <td>{repairRecord.deviceSerial}</td>
+                                <td>{repairRecord.deviceName}</td>
                                 <td>{repairRecord.problem}</td>
                                 <td>{dayjs(repairRecord.createdAt).format('DD/MM/YYYY')}</td>
                                 <td>{repairRecord.endJobDate ? dayjs(repairRecord.endJobDate).format('DD/MM/YYYY') : '-'}</td>
@@ -157,37 +158,41 @@ export default function Page() {
             </div>
             <Modal title='ปรับสถานะ' isOpen={showModal} onClose={() => setShowModal(false)}>
                 <div className="flex gap-4">
-                <div className="w-1/2">
-                    <div>เลือกสถานะ</div>
-                    <div>
-                        <select className='form-control' value={status} onChange={(e) => setStatus(e.target.value)}>
-                            {statusList.map((item: any) => (
-                                <option value={item.value} key={item.value}>
-                                    {item.label}
-                                </option>
-                            ))}
-                        </select>
+                    <div className="w-1/2">
+                        <div>เลือกสถานะ</div>
+                        <div>
+                            <select className='form-control' value={status} onChange={(e) => setStatus(e.target.value)}>
+                                {statusList.map((item: any) => (
+                                    <option value={item.value} key={item.value}>
+                                        {item.label}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <div className='w-1/2'>
-                    <div>เลือกช่างซ่อม</div>
-                    <div>
-                        <select className='form-control' value={engineerId} onChange={(e) => setEngineerId(Number(e.target.value))}>
-                            <option value="">-- เลือกช่างซ่อม --</option>
-                            {engineers.map((engineer: any) => (
-                                <option value={engineer.id} key={engineer.id}>
-                                    {engineer.username}
-                                </option>
-                            ))}
-                        </select>
+                    <div className='w-1/2'>
+                        <div>เลือกช่างซ่อม</div>
+                        <div>
+                            <select className='form-control' value={engineerId} onChange={(e) => setEngineerId(Number(e.target.value))}>
+                                <option value="">-- เลือกช่างซ่อม --</option>
+                                {engineers.map((engineer: any) => (
+                                    <option value={engineer.id} key={engineer.id}>
+                                        {engineer.username}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
-                </div>
                 </div>
                 <div className="mt-3">
                     <div>การแก้ไข</div>
                     <textarea className='form-control w-full' rows={5} 
                         value={solving} 
                         onChange={(e) => setSolving(e.target.value)}></textarea>
+                </div>
+                <div className="mt-3">
+                    <div>วันที่ซ่อมเสร็จ</div>
+                    <input className='form-control' type="date" value={endJobDate} onChange={(e) => setEndJobDate(e.target.value)} />
                 </div>
                 <button className="btn-primary mt-3" onClick={handleSave}>
                     <i className="fa-solid fa-check mr-3"></i>

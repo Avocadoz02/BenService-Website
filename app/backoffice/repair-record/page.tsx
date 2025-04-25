@@ -28,6 +28,7 @@ export default function Page() {
     const [recieveCustomerName, setRecieveCustomerName] = useState('');
     const [recieveAmount, setRecieveAmount] = useState(0);
     const [recieveId, setRecieveId] = useState(0);
+    const [payDate, setPayDate] = useState('');
 
     useEffect(() => {
         fetchDevices();
@@ -87,7 +88,7 @@ export default function Page() {
         try {
 
             if (id == 0) {
-                await axios.post(`${config.apiUrl}/api/device/create`, payload);
+                await axios.post(`${config.apiUrl}/api/repairRecord/create`, payload);
             } else {
                 await axios.put(`${config.apiUrl}/api/repairRecord/update/${id}`, payload);
                 setId(0);
@@ -158,6 +159,7 @@ export default function Page() {
         setRecieveCustomerName(repairRecord.customerName);
         setRecieveAmount(repairRecord.amount ?? 0);
         setRecieveId(repairRecord.id);
+        setPayDate(dayjs(repairRecord.payDate).format('YYYY-MM-DD'));
     }
     const closeModalReceive = () => {
         setShowModalReceive(false);
@@ -211,7 +213,7 @@ export default function Page() {
                                 <td>{getStatusName(repairRecord.status)}</td>
                                 <td className="text-right!">{repairRecord.amount?.toLocaleString()}</td>
                                 <td>
-                                    <button className="btn-edit" onClick={() => openModalReceive(repairRecord)}>
+                                    <button className="btn-edit text-lime-400!" onClick={() => openModalReceive(repairRecord)}>
                                         <i className="fa-solid fa-check mr-2"></i>
                                         รับเครื่อง
                                     </button>
@@ -312,6 +314,10 @@ export default function Page() {
                         value={recieveAmount} 
                         onChange={(e) => setRecieveAmount(Number(e.target.value))} />
                     </div>
+                </div>
+                <div className="mt-4">
+                    <div>วันที่ชำระเงิน</div>
+                    <input type="date" className="form-control" value={payDate} onChange={(e) => setPayDate(e.target.value)} />
                 </div>
                 <button className="btn-primary mt-4" onClick={handleReceive}>
                     <i className="fa-solid fa-check mr-3"></i>

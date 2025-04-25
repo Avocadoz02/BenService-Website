@@ -167,7 +167,7 @@ export default function Page() {
                                 <td>{user.username}</td>
                                 <td>{user.section?.department?.name}</td>
                                 <td>{user.section?.name}</td>
-                                <td>{user.level}</td>
+                                <td>{user.level[0].toUpperCase() + user.level.slice(1)}</td>
                                 <td className="text-center">
                                     <button className="btn-edit" 
                                         onClick={() => handleEdit(user)}>
