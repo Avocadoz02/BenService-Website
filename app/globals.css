@@ -22,7 +22,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Noto Sans Thai Looped', Arial, Helvetica, sans-serif;
 }
 
 button {
@@ -42,7 +42,11 @@ button {
 }
 
 .sidebar-item {
-  @apply flex items-center p-2 text-gray-300 rounded hover:bg-gray-300 hover:text-gray-800;
+  @apply flex items-center p-2 text-gray-300 rounded   
+}
+
+.sidebar-item.active, .sidebar-item:hover {
+  @apply bg-gray-300 text-gray-800;
 }
 
 .sidebar-nav {

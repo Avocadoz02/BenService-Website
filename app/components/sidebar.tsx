@@ -1,4 +1,8 @@
+'use client'
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import clsx from "clsx";
 
 export function Sidebar() {
     const menuItem = [
@@ -10,6 +14,7 @@ export function Sidebar() {
         { title: 'ทะเบียนวัสดุ อุปกรณ์', href: '/backoffice/device', icon: 'fa-solid fa-box'},
         { title: 'ข้อมูลร้าน', href: '/backoffice/company', icon: 'fa-solid fa-shop'},
     ];
+
     return (
         <aside className="sidebar">
             <div className="sidebar-header">
@@ -20,7 +25,7 @@ export function Sidebar() {
                 <ul>
                     {menuItem.map((item) => (
                         <li key={item.title}>
-                            <Link href={item.href} className="sidebar-item">
+                            <Link href={item.href} className={clsx("sidebar-item", usePathname() === item.href ? "active" : "")}>
                                 <i className={item.icon + ' mr-2 w-6'}></i>
                                 {item.title}
                             </Link>
