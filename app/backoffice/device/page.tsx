@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import config from "@/app/config"
+import clsx from "clsx"
 import Swal from "sweetalert2"
 import axios from "axios"
 import Modal from "@/app/components/modal"
@@ -17,14 +18,37 @@ export default function Page() {
     const [remark, setRemark] = useState('');
     const [id, setId] = useState(0);
 
+    // pagination
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(4);
+    const [totalPage, setTotalPage] = useState(0);
+    const [totalPageList, setTotalPageList] = useState<number[]>([]); //array ไว้เก็บเลขหน้าว่าอยู่หน้าที่เท่าไหร่
+
+    const didFetch = useRef(false);
+
     useEffect(() => {
-        fetchData();
+        if (didFetch.current) return; // ถ้า fetch แล้ว ไม่ต้องทำอีก
+        didFetch.current = true;
+
+        fetchData(page);
     }, []);
 
-    const fetchData = async () => {
+    const fetchData = async (page: number) => {
         try {
-            const response = await axios.get(`${config.apiUrl}/api/device/list`);
-            setDevices(response.data)
+            const params = {
+                page: page,
+                pageSize: pageSize
+            }
+            const response = await axios.get(`${config.apiUrl}/api/device/listDevicesPage`, { params: params });
+            setDevices(response.data.results);
+
+            if (totalPage === 0) {
+                setTotalPage(response.data.totalPage);
+
+                for (let i = 1; i <= response.data.totalPage; i++) {
+                    totalPageList.push(i);
+                }
+            }
         } catch (error: any) {
             Swal.fire({
                 icon: 'error',
@@ -66,7 +90,7 @@ export default function Page() {
             setRemark('');
             setId(0);
 
-            fetchData();
+            fetchData(page);
         } catch (error: any) {
             Swal.fire({
                 icon: 'error',
@@ -93,7 +117,7 @@ export default function Page() {
 
             if (button.isConfirmed) {
                 await axios.delete(`${config.apiUrl}/api/device/remove/${id}`);
-                fetchData();
+                fetchData(page);
             }
         } catch (error: any) {
             Swal.fire({
@@ -103,6 +127,30 @@ export default function Page() {
             });
         }
     }
+
+
+    // pagination btn
+    const handlePreviousPage = () => {
+        if (page > 1) {
+            const newPrePage = page - 1;
+            setPage(newPrePage);
+            fetchData(newPrePage);
+        }
+    }
+
+    const handleNextPage = () => {
+        if (page < totalPage) {
+            const newNextPage = page + 1;
+            setPage(newNextPage);
+            fetchData(newNextPage);
+        }
+    }
+    
+    const handleChangePage = (pageChanged: number) => {
+        setPage(pageChanged);
+        fetchData(pageChanged);
+    }
+
 
     return (
         <div className="card">
@@ -121,7 +169,7 @@ export default function Page() {
                             <th>Serial</th>
                             <th>วันหมดอายุ</th>
                             <th>หมายเหตุ</th>
-                            <th style={{width: '170px'}}></th>
+                            <th style={{ width: '220px' }}>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -132,18 +180,35 @@ export default function Page() {
                                 <td>{item.serial}</td>
                                 <td>{dayjs(item.expireDate).format('DD/MM/YYYY')}</td>
                                 <td>{item.remark}</td>
-                                <td className="text-center">
+                                <td className="flex gap-2 justify-center">
                                     <button className="btn-edit" onClick={() => handleEdit(item)}>
-                                        <i className="fa-solid fa-pen-to-square"></i>
+                                        <i className="fa-solid fa-pen-to-square mr-2"></i>
+                                        แก้ไข
                                     </button>
                                     <button className="btn-delete" onClick={() => handleDelete(item.id)}>
-                                        <i className="fa-solid fa-trash"></i>
+                                        <i className="fa-solid fa-trash mr-2"></i>
+                                        ลบ
                                     </button>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
+
+                {/* pagination */}
+                <div className="flex justify-end gap-2 mt-5">
+                    <button className="prev-page" onClick={handlePreviousPage}>
+                        <i className="fa-solid fa-chevron-left"></i>
+                    </button>
+                    {totalPageList.map((item: number) => (
+                        <button key={item} className={clsx("number-page", page === item ? "active" : "")} onClick={() => handleChangePage(item)}>
+                            {item}
+                        </button>
+                    ))}
+                    <button className="next-page" onClick={handleNextPage}>
+                        <i className="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
             </div>
 
             <Modal title="ทะเบียนวัสดุ อุปกรณ์" isOpen={showModal} onClose={handleCloseModal}>
