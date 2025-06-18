@@ -23,14 +23,15 @@ export default function Page() {
 
     
     const didFetch = useRef(false);
-      
+
+    const currentYear = dayjs().year();
+    const currentMonth = dayjs().month();
+
     useEffect(() => {
         if (didFetch.current) return; // ถ้า fetch แล้ว ไม่ต้องทำอีก
         didFetch.current = true;
 
         //year 5 years ago to now
-        const currentYear = dayjs().year();
-        const currentMonth = dayjs().month();
         const listYear = Array.from({ length: 5 }, (_, i) => currentYear - i);
         setListYear(listYear);
         setSelectedYear(currentYear);
@@ -38,11 +39,14 @@ export default function Page() {
         setSelectedChartIncomePerMonth(currentYear);
 
         fetchData();
-
-        fetchDataChartIncomePerMonth(); // fetch พร้อม render chart      
     }, []);
-
+    
     const fetchData = async () => {
+        await fetchDataIncomePerDays();
+        await fetchDataChartIncomePerMonth(); // fetch พร้อม render chart  
+    };
+
+    const fetchDataIncomePerDays = async () => {
         const params = {
             year: selectedYear,
             month: selectedMonth + 1
@@ -69,62 +73,6 @@ export default function Page() {
         );
     };
 
-
-    const renderChartIncomePerDays = ( data: number[] ) => {
-        const options = {
-            chart: { type: 'bar', height: 320, background: 'white' },
-            series: [{ data: data }],
-            xaxis: {
-                categories: Array.from({ length: data.length }, (_, i) => `${i + 1}`)
-            },
-            fill: {
-                colors: ['#E91E63']
-            }
-        };
-        const chartIncomePerDays = document.getElementById('chartIncomePerDays');
-        const chart = new Chart(chartIncomePerDays, options);
-        chart.render();
-    };
-
-    const renderChartIncomePerMonth = ( data: number[] ) => {
-        // const data = Array.from({ length: 12 }, () => Math.floor(Math.random() * 10000));
-        const options = {
-            chart: { type: 'bar', height: 320, background: 'white' },
-            series: [{ data: data }],
-            xaxis: {
-                categories: [
-                    'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
-                    'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
-                ]
-            },
-        };
-        const chartIncomePerMonth = document.getElementById('chartIncomePerMonth');
-        const chart = new Chart(chartIncomePerMonth, options);
-        chart.render();
-    };
-
-    const renderChartTotalRepairRecord = (
-        totalRepairRecordComplete: number,
-        totalRepairRecordRepairing: number,
-        totalRepairRecord: number
-    ) => {
-        const data = [totalRepairRecordComplete, totalRepairRecordRepairing, totalRepairRecord];
-        const options = {
-            chart: { 
-                type: 'pie', 
-                height: 317, 
-                background: 'white' },
-            series: data,
-            labels: ['งานซ่อมเสร็จ', 'งานกำลังซ่อม', 'งานทั้งหมด'],
-            fill: {
-                colors: ['#ff6467', '#fcc800', '#7ccf00']
-            }
-        };
-        const chartPie = document.getElementById('chartPie');
-        const chart = new Chart(chartPie, options);
-        chart.render();
-    };
-
     const fetchDataChartIncomePerMonth = async () => {
         try {
             const params = {
@@ -148,6 +96,72 @@ export default function Page() {
             });
         }
     }
+
+
+    // Render Charts
+
+    const renderChartIncomePerDays = ( data: number[] ) => {
+        const options = {
+            chart: { type: 'bar', height: 320, background: 'white' },
+            series: [{ data: data }],
+            xaxis: {
+                categories: Array.from({ length: data.length }, (_, i) => `${i + 1}`)
+            },
+            fill: {
+                colors: ['#E91E63']
+            }
+        };
+        const chartIncomePerDays = document.getElementById('chartIncomePerDays');
+
+        if (chartIncomePerDays) {
+            const chart = new Chart(chartIncomePerDays, options);
+            chart.render();
+        }
+    };
+
+    const renderChartIncomePerMonth = ( data: number[] ) => {
+        const options = {
+            chart: { type: 'bar', height: 320, background: 'white' },
+            series: [{ data: data }],
+            xaxis: {
+                categories: [
+                    'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+                    'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'
+                ]
+            },
+        };
+        const chartIncomePerMonth = document.getElementById('chartIncomePerMonth');
+        
+        if (chartIncomePerMonth) {
+            const chart = new Chart(chartIncomePerMonth, options);
+            chart.render();
+        }
+    };
+
+    const renderChartTotalRepairRecord = (
+        totalRepairRecordComplete: number,
+        totalRepairRecordRepairing: number,
+        totalRepairRecord: number
+    ) => {
+        const data = [totalRepairRecordComplete, totalRepairRecordRepairing, totalRepairRecord];
+        const options = {
+            chart: { 
+                type: 'pie', 
+                height: 317, 
+                background: 'white' },
+            series: data,
+            labels: ['งานซ่อมเสร็จ', 'งานกำลังซ่อม', 'งานทั้งหมด'],
+            fill: {
+                colors: ['#ff6467', '#fcc800', '#7ccf00']
+            }
+        };
+        const chartPie = document.getElementById('chartPie');
+
+        if (chartPie) {
+            const chart = new Chart(chartPie, options);
+            chart.render();
+        }
+    };
 
     return (
         <div className="card">
@@ -189,7 +203,7 @@ export default function Page() {
                         ))}
                     </select>
                 </div>
-                <button className="btn-primary" onClick={fetchData}>
+                <button className="btn-primary" onClick={fetchDataIncomePerDays}>
                     <i className='fa-solid fa-magnifying-glass mr-2'></i>
                     แสดงข้อมูล
                 </button>
