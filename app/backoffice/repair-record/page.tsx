@@ -28,6 +28,7 @@ export default function Page() {
     const [recieveCustomerName, setRecieveCustomerName] = useState('');
     const [recieveAmount, setRecieveAmount] = useState(0);
     const [recieveId, setRecieveId] = useState(0);
+    const [SolvingReceive, setSolvingRecieve] = useState('');
     const [payDate, setPayDate] = useState('');
 
     useEffect(() => {
@@ -47,6 +48,14 @@ export default function Page() {
     const closeModal = () => {
         setShowModal(false);
         setId(0);
+        setCustomerName('');
+        setCustomerPhone('');
+        setDeviceId('');
+        setDeviceName('');
+        setDeviceBarcode('');
+        setDeviceSerial('');
+        setExpireDate('');
+        setProblem('');
     }
 
     const fetchRepairRecord = async () => {
@@ -159,6 +168,7 @@ export default function Page() {
         setRecieveCustomerName(repairRecord.customerName);
         setRecieveAmount(repairRecord.amount ?? 0);
         setRecieveId(repairRecord.id);
+        setSolvingRecieve(repairRecord.solving);
         setPayDate(dayjs(repairRecord.payDate).format('YYYY-MM-DD'));
     }
     const closeModalReceive = () => {
@@ -192,13 +202,13 @@ export default function Page() {
                         <tr>
                             <th>ชื่อลูกค้า</th>
                             <th>เบอร์โทรศัพท์</th>
-                            <th>อุปกรณ์</th>
+                            <th style={{width: "300px"}}>อุปกรณ์</th>
                             <th>อาการ</th>
                             <th>วันที่รับซ่อม</th>
                             <th>วันที่ซ่อมเสร็จ</th>
                             <th>สถานะ</th>
-                            <th style={{width: "100px"}}>ค่าบริการ</th>
-                            <th style={{width: '330px'}}>Action</th>
+                            <th style={{width: "110px"}}>ค่าบริการ</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -211,9 +221,9 @@ export default function Page() {
                                 <td>{dayjs(repairRecord.createdAt).format('DD/MM/YYYY')}</td>
                                 <td>{repairRecord.endJobDate ? dayjs(repairRecord.endJobDate).format('DD/MM/YYYY') : '-'}</td>
                                 <td>{getStatusName(repairRecord.status)}</td>
-                                <td className="text-right!">{repairRecord.amount?.toLocaleString()}</td>
-                                <td>
-                                    <button className="btn-edit text-lime-400!" onClick={() => openModalReceive(repairRecord)}>
+                                    {repairRecord.amount ? <td className="text-right!">{repairRecord.amount?.toLocaleString()} ฿</td> : <td>-</td>}
+                                <td className="grid grid-cols-2 gap-2 min-w-[240px]">
+                                    <button className="btn-receive col-span-2" onClick={() => openModalReceive(repairRecord)}>
                                         <i className="fa-solid fa-check mr-2"></i>
                                         รับเครื่อง
                                     </button>
@@ -305,15 +315,19 @@ export default function Page() {
                 <div className="flex gap-4">
                     <div className="w-1/2">
                         <div>ชื่อลูกค้า</div>
-                        <input type="text" className="form-control disabled"
+                        <input type="text" className="form-control"
                         value={recieveCustomerName} readOnly/>
                     </div>
                     <div className="w-1/2">
                         <div>ค่าบริการ</div>
-                        <input type="text" className="form-control text-right"
+                        <input type="number" className="form-control text-right"
                         value={recieveAmount} 
                         onChange={(e) => setRecieveAmount(Number(e.target.value))} />
                     </div>
+                </div>
+                <div className="mt-4">
+                    <div>การแก้ไข</div>
+                    <textarea rows={5} className="form-control" value={SolvingReceive ?? '-'} readOnly/>
                 </div>
                 <div className="mt-4">
                     <div>วันที่ชำระเงิน</div>

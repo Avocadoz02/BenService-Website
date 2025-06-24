@@ -9,12 +9,16 @@ import Swal from "sweetalert2"
 export default function Page() {
     const [showModal, setShowModal] = useState(false);
     const [users, setUsers] = useState([]);
-    const [levels, setLevels ] = useState(['admin', 'user', 'engineer']);
     const [id, setId] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [level, setLevel] = useState('admin');
+    const [levelList, setLevelList ] = useState([
+        {value: 'admin', label: 'Admin'}, 
+        {value: 'user', label: 'User'}, 
+        {value: 'engineer', label: 'Engineer'}
+    ]);
+    const [level, setLevel] = useState('user');
 
     const [departments, setDepartments] = useState([]);
     const [sections, setSections] = useState([]);
@@ -66,6 +70,11 @@ export default function Page() {
 
     const handleCloseModal = () => {
         setShowModal(false);
+        setDepartmentId('');
+        setSectionId('');
+        setUsername('');
+        setLevel('user');
+        fetchDepartments();
     }
 
     const handleSave = async () => {
@@ -168,7 +177,7 @@ export default function Page() {
                                 <td>{user.section?.department?.name}</td>
                                 <td>{user.section?.name}</td>
                                 <td>{user.level[0].toUpperCase() + user.level.slice(1)}</td>
-                                <td className="text-center">
+                                <td className="flex gap-2 justify-center">
                                     <button className="btn-edit" 
                                         onClick={() => handleEdit(user)}>
                                         <i className="fa-solid fa-edit mr-2"></i>
@@ -234,9 +243,10 @@ export default function Page() {
                 <div className="mt-3">Level</div>
                 <select 
                     className="form-control" 
+                    value={level}
                     onChange={(e) => setLevel(e.target.value)}>
-                    {levels.map((level: any) => (
-                        <option key={level} value={level}>{level[0].toUpperCase() + level.slice(1)}</option>
+                    {levelList.map((level: any) => (
+                        <option key={level.value} value={level.value}>{level.label}</option>
                     ))}
                 </select>
                 
