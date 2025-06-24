@@ -45,7 +45,9 @@ export function TopNav() {
                     </div>
                     <div className="flex items-center">
                         <span className="text-gray-200">{name}</span>
-                        <span className="text-red-300 ml-5 font-bold">( {level} )</span>
+                        <span className="text-red-300 ml-5 font-bold">
+                            {level[0]?.toUpperCase() + level.slice(1)}
+                        </span>
                         <button onClick={handleProfile} className="bg-indigo-500 text-white px-4 py-2 rounded-md ml-5 hover:bg-indigo-600">
                             <i className="fa-solid fa-user mr-3"></i>
                             Profile

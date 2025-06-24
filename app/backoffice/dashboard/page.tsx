@@ -19,8 +19,6 @@ export default function Page() {
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
     const [selectedChartIncomePerMonth, setSelectedChartIncomePerMonth] = useState(new Date().getFullYear());
-    const [listIncomePerMonth, setListIncomePerMonth] = useState<number[]>([]);
-
     
     const didFetch = useRef(false);
 
@@ -210,10 +208,10 @@ export default function Page() {
             </div>
             <div id="chartIncomePerDays" className="text-gray-800 rounded-lg overflow-hidden"></div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-3 gap-3">
                 <div className="col-span-2">
                     <div className="text-2xl font-bold mt-5 mb-2">รายได้รายเดือน</div>
-                    <div className="flex items-center gap-4 mb-3 mt-2">
+                    <div className="flex items-center gap-4 mt-2">
                         <div className="flex items-center gap-4 min-w-[150px]">
                             <div>ปี</div>
                             <select className='form-control mt-0!' onChange={(e) => setSelectedChartIncomePerMonth(parseInt(e.target.value))}>
@@ -229,7 +227,7 @@ export default function Page() {
                     </div>
                 </div>
                 
-                <div className="text-2xl font-bold mt-5 mb-2">งานทั้งหมด</div>
+                <div className="text-2xl font-bold mt-5">งานทั้งหมด</div>
                 
                 <div id="chartIncomePerMonth" className="text-gray-800 rounded-lg overflow-hidden col-span-2"></div>
                 

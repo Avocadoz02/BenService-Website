@@ -31,7 +31,8 @@ export function Sidebar() {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.message,
+                // text: err.message,
+                text: 'Please login.',
             });
         }
     };

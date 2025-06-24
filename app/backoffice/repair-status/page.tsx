@@ -15,7 +15,7 @@ export default function Page() {
     const [solving, setSolving] = useState('');
     const [statusList, setStatusList] = useState([
         { value: 'active', label: 'รอซ่อม' },
-        { value: 'pending', label: 'รอลูกค้ายืน' },
+        { value: 'pending', label: 'รอลูกค้ายืนยัน' },
         { value: 'repairing', label: 'กำลังซ่อม' },
         { value: 'done', label: 'ซ่อมเสร็จแล้ว' },
         { value: 'cancle', label: 'ยกเลิก' },
@@ -125,7 +125,7 @@ export default function Page() {
                         <tr>
                             <th>ชื่อลูกค้า</th>
                             <th>เบอร์โทรศัพท์</th>
-                            <th>อุปกรณ์</th>
+                            <th style={{ width: '300px' }}>อุปกรณ์</th>
                             <th>อาการ</th>
                             <th>วันที่รับซ่อม</th>
                             <th>วันที่ซ่อมเสร็จ</th>
