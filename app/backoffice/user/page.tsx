@@ -24,6 +24,7 @@ export default function Page() {
     const [sections, setSections] = useState([]);
     const [sectionId, setSectionId] = useState('');
     const [departmentId, setDepartmentId] = useState('');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         fetchUsers();
@@ -60,8 +61,19 @@ export default function Page() {
     }
 
     const fetchUsers = async () => {
-        const response = await axios.get(`${config.apiUrl}/api/user/list`);
+        try {
+            setLoading(true);
+            const response = await axios.get(`${config.apiUrl}/api/user/list`);
         setUsers(response.data);
+        } catch (error: any) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.message
+            })
+        } finally {
+            setLoading(false);
+        }
     }
 
     const handleShowModal = () => {
@@ -153,46 +165,47 @@ export default function Page() {
 
     return (
         <div className="card">
-            <h1>พนังงานร้าน</h1>
+            <h1>พนักงานร้าน</h1>
             <div className="card-body">
                 <button className="btn btn-primary" onClick={handleShowModal}>
                     <i className="fa-solid fa-plus mr-2"></i>
                     เพิ่มข้อมูล
                 </button>
-
-                <table className="table table-striped mt-5">
-                    <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th>Department</th>
-                            <th>Section</th>
-                            <th style={{ width: '150px'}}>Level</th>
-                            <th style={{width: '220px'}}>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {users.map((user: any) => (
-                            <tr key={user.id}>
-                                <td>{user.username}</td>
-                                <td>{user.section?.department?.name}</td>
-                                <td>{user.section?.name}</td>
-                                <td>{user.level[0].toUpperCase() + user.level.slice(1)}</td>
-                                <td className="flex gap-2 justify-center">
-                                    <button className="btn-edit" 
-                                        onClick={() => handleEdit(user)}>
-                                        <i className="fa-solid fa-edit mr-2"></i>
-                                        แก้ไข
-                                    </button>
-                                    <button className="btn-delete"
-                                        onClick={() => handleDelete(user.id)}>
-                                        <i className="fa-solid fa-trash mr-2"></i>
-                                        ลบ
-                                    </button>
-                                </td>
+                {loading ? <div className="skeleton min-h-[600px] mt-5"></div> :
+                    <table className="table table-striped mt-5">
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Department</th>
+                                <th>Section</th>
+                                <th style={{ width: '150px'}}>Level</th>
+                                <th style={{width: '220px'}}>Action</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {users.map((user: any) => (
+                                <tr key={user.id}>
+                                    <td>{user.username}</td>
+                                    <td>{user.section?.department?.name}</td>
+                                    <td>{user.section?.name}</td>
+                                    <td>{user.level[0].toUpperCase() + user.level.slice(1)}</td>
+                                    <td className="flex gap-2 justify-center">
+                                        <button className="btn-edit" 
+                                            onClick={() => handleEdit(user)}>
+                                            <i className="fa-solid fa-edit mr-2"></i>
+                                            แก้ไข
+                                        </button>
+                                        <button className="btn-delete"
+                                            onClick={() => handleDelete(user.id)}>
+                                            <i className="fa-solid fa-trash mr-2"></i>
+                                            ลบ
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                }
             </div>
 
             <Modal title="เพิ่มข้อมูลพนักงาน" isOpen={showModal} onClose={() => handleCloseModal()}>

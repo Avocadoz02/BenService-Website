@@ -6,12 +6,33 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
+
   const [ username, setUsername ] = useState('');
   const [ password, setPassword ] = useState('');
-  const router = useRouter();
+  const [ loading, setLoading ] = useState(false);
+
+  const loadingOvelay = () => {
+    if (loading === true) {
+      return (
+        <div className="overlay">
+        <div className="overlayDoor"></div>
+        <div className="overlayContent">
+          <div className="loader">
+            <div className="inner"></div>
+          </div>
+        </div>
+      </div>
+      );
+    } else {
+      return null;
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    setLoading(true);
 
     try {
       if (username === '' || password === '') {
@@ -21,6 +42,7 @@ export default function Home() {
           text: 'Username and Password are required'
         });
 
+        setLoading(false);
         return;
       }
 
@@ -49,6 +71,7 @@ export default function Home() {
           title: 'error',
           text: 'Invalid Username or Password'
         })
+        setLoading(false);
       }
     } catch (error: any) {
       Swal.fire({
@@ -56,12 +79,14 @@ export default function Home() {
         title: 'error',
         text: error.message
       });
+      setLoading(false);
     }
   }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-8 bg-gradient-to-br from-gray-800 to-gray-950">
-      <div className="text-gray-400 text-4xl font-bold mb-10">ระบบ BunService 2025</div>
+      {loadingOvelay()}
+      <div className="text-gray-400 text-4xl font-bold mb-10">ระบบ Ben Service</div>
       <div className="bg-gray-800 p-8 rounded-2xl shadow-xl w-full max-w-md">
         <h1 className="text-2xl font-bold mb-4 text-white"><div>เข้าสู่ระบบ</div></h1>
         <form className="flex flex-col gap-2 mt-10 w-full" onSubmit={handleSubmit}>

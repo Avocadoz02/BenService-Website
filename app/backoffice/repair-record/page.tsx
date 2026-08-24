@@ -22,6 +22,7 @@ export default function Page() {
     const [deviceId, setDeviceId] = useState('');
     const [expireDate, setExpireDate] = useState('');
     const [id, setId] = useState(0);
+    const [loading, setLoading] = useState(false);
 
     // รับเครื่อง
     const [showModalReceive, setShowModalReceive] = useState(false);
@@ -59,8 +60,19 @@ export default function Page() {
     }
 
     const fetchRepairRecord = async () => {
-        const response = await axios.get(`${config.apiUrl}/api/repairRecord/list`);
-        setRepairRecords(response.data);
+        try {
+            setLoading(true);
+            const response = await axios.get(`${config.apiUrl}/api/repairRecord/list`);
+            setRepairRecords(response.data);
+        } catch (error: any) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.message
+            });
+        } finally {
+            setLoading(false);
+        }
     }
 
     const handleDeviceChange = (deviceId: string) => {
@@ -196,50 +208,52 @@ export default function Page() {
                     <i className="fa-solid fa-plus mr-2"></i>
                         เพิ่มข้อมูลการซ่อม
                 </button>
-
-                <table className="table mt-5">
-                    <thead>
-                        <tr>
-                            <th>ชื่อลูกค้า</th>
-                            <th>เบอร์โทรศัพท์</th>
-                            <th style={{width: "300px"}}>อุปกรณ์</th>
-                            <th>อาการ</th>
-                            <th>วันที่รับซ่อม</th>
-                            <th>วันที่ซ่อมเสร็จ</th>
-                            <th>สถานะ</th>
-                            <th style={{width: "110px"}}>ค่าบริการ</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {repairRecords.map((repairRecord: any, index: number) => (
-                            <tr key={index}>
-                                <td>{repairRecord.customerName}</td>
-                                <td>{repairRecord.customerPhone}</td>
-                                <td>{repairRecord.deviceName}</td>
-                                <td>{repairRecord.problem}</td>
-                                <td>{dayjs(repairRecord.createdAt).format('DD/MM/YYYY')}</td>
-                                <td>{repairRecord.endJobDate ? dayjs(repairRecord.endJobDate).format('DD/MM/YYYY') : '-'}</td>
-                                <td>{getStatusName(repairRecord.status)}</td>
-                                    {repairRecord.amount ? <td className="text-right!">{repairRecord.amount?.toLocaleString()} ฿</td> : <td>-</td>}
-                                <td className="grid grid-cols-2 gap-2 min-w-[240px]">
-                                    <button className="btn-receive col-span-2" onClick={() => openModalReceive(repairRecord)}>
-                                        <i className="fa-solid fa-check mr-2"></i>
-                                        รับเครื่อง
-                                    </button>
-                                    <button className="btn-edit" onClick={() => handleEdit(repairRecord)}>
-                                        <i className="fa-solid fa-edit mr-2"></i>
-                                        แก้ไข
-                                    </button>
-                                    <button className="btn-delete" onClick={() => handleDelete(repairRecord.id)}>
-                                        <i className="fa-solid fa-trash mr-2"></i>
-                                        ลบ
-                                    </button>
-                                </td>
+                
+                {loading ? <div className="skeleton min-h-[800px] mt-5"></div> :
+                    <table className="table mt-5">
+                        <thead>
+                            <tr>
+                                <th>ชื่อลูกค้า</th>
+                                <th>เบอร์โทรศัพท์</th>
+                                <th style={{width: "300px"}}>อุปกรณ์</th>
+                                <th>อาการ</th>
+                                <th>วันที่รับซ่อม</th>
+                                <th>วันที่ซ่อมเสร็จ</th>
+                                <th>สถานะ</th>
+                                <th style={{width: "110px"}}>ค่าบริการ</th>
+                                <th>Action</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {repairRecords.map((repairRecord: any, index: number) => (
+                                <tr key={index}>
+                                    <td>{repairRecord.customerName}</td>
+                                    <td>{repairRecord.customerPhone}</td>
+                                    <td>{repairRecord.deviceName}</td>
+                                    <td>{repairRecord.problem}</td>
+                                    <td>{dayjs(repairRecord.createdAt).format('DD/MM/YYYY')}</td>
+                                    <td>{repairRecord.endJobDate ? dayjs(repairRecord.endJobDate).format('DD/MM/YYYY') : '-'}</td>
+                                    <td>{getStatusName(repairRecord.status)}</td>
+                                        {repairRecord.amount ? <td className="text-right!">{repairRecord.amount?.toLocaleString()} ฿</td> : <td>-</td>}
+                                    <td className="grid grid-cols-2 gap-2 min-w-[240px]">
+                                        <button className="btn-receive col-span-2" onClick={() => openModalReceive(repairRecord)}>
+                                            <i className="fa-solid fa-check mr-2"></i>
+                                            รับเครื่อง
+                                        </button>
+                                        <button className="btn-edit" onClick={() => handleEdit(repairRecord)}>
+                                            <i className="fa-solid fa-edit mr-2"></i>
+                                            แก้ไข
+                                        </button>
+                                        <button className="btn-delete" onClick={() => handleDelete(repairRecord.id)}>
+                                            <i className="fa-solid fa-trash mr-2"></i>
+                                            ลบ
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                }
             </div>
 
             <Modal title="เพิ่มข้อมูลการซ่อม" isOpen={showModal} onClose={() => closeModal()} size="xl">

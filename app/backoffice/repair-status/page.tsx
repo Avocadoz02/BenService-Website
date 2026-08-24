@@ -26,6 +26,7 @@ export default function Page() {
     const [engineers, setEngineers] = useState([]);
     const [engineerId, setEngineerId] = useState(0);
     const [endJobDate, setEndJobDate] = useState('');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         fetchRepairRecords();
@@ -47,9 +48,20 @@ export default function Page() {
     }
 
     const fetchRepairRecords = async () => {
-        const response = await axios.get(`${config.apiUrl}/api/repairRecord/list`);
-        setRepairRecords(response.data);
-        setTempRepairRecords(response.data);
+        try {
+            setLoading(true);
+            const response = await axios.get(`${config.apiUrl}/api/repairRecord/list`);
+            setRepairRecords(response.data);
+            setTempRepairRecords(response.data);
+        } catch (error: any) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.message,
+            });
+        } finally {
+            setLoading(false);
+        }
     }
 
     const getStatusName = (status: string) => {
@@ -120,41 +132,43 @@ export default function Page() {
                 </div>
             </div>
             <div className="card-body">
-                <table className='table mt-5'>
-                    <thead>
-                        <tr>
-                            <th>ชื่อลูกค้า</th>
-                            <th>เบอร์โทรศัพท์</th>
-                            <th style={{ width: '300px' }}>อุปกรณ์</th>
-                            <th>อาการ</th>
-                            <th>วันที่รับซ่อม</th>
-                            <th>วันที่ซ่อมเสร็จ</th>
-                            <th style={{ width: '100px' }}>ช่างซ่อม</th>
-                            <th>สถานะ</th>
-                            <th style={{ width: '170px' }}>จัดการสถานะ</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {repairRecords.map((repairRecord: any) => (
-                            <tr key={repairRecord.id}>
-                                <td>{repairRecord.customerName}</td>
-                                <td>{repairRecord.customerPhone}</td>
-                                <td>{repairRecord.deviceName}</td>
-                                <td>{repairRecord.problem}</td>
-                                <td>{dayjs(repairRecord.createdAt).format('DD/MM/YYYY')}</td>
-                                <td>{repairRecord.endJobDate ? dayjs(repairRecord.endJobDate).format('DD/MM/YYYY') : '-'}</td>
-                                <td>{repairRecord.engineer?.username ?? '-'}</td>
-                                <td>{getStatusName(repairRecord.status)}</td>
-                                <td>
-                                    <button className='btn-edit' onClick={() => handleEdit(repairRecord.id)}>
-                                        <i className="fa-solid fa-edit mr-2"></i>
-                                        ปรับสถานะ
-                                    </button>
-                                </td>
+                {loading ? <div className='skeleton min-h-[800px] mt-5'></div> :
+                    <table className='table mt-5'>
+                        <thead>
+                            <tr>
+                                <th>ชื่อลูกค้า</th>
+                                <th>เบอร์โทรศัพท์</th>
+                                <th style={{ width: '300px' }}>อุปกรณ์</th>
+                                <th>อาการ</th>
+                                <th>วันที่รับซ่อม</th>
+                                <th>วันที่ซ่อมเสร็จ</th>
+                                <th style={{ width: '100px' }}>ช่างซ่อม</th>
+                                <th>สถานะ</th>
+                                <th style={{ width: '170px' }}>จัดการสถานะ</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {repairRecords.map((repairRecord: any) => (
+                                <tr key={repairRecord.id}>
+                                    <td>{repairRecord.customerName}</td>
+                                    <td>{repairRecord.customerPhone}</td>
+                                    <td>{repairRecord.deviceName}</td>
+                                    <td>{repairRecord.problem}</td>
+                                    <td>{dayjs(repairRecord.createdAt).format('DD/MM/YYYY')}</td>
+                                    <td>{repairRecord.endJobDate ? dayjs(repairRecord.endJobDate).format('DD/MM/YYYY') : '-'}</td>
+                                    <td>{repairRecord.engineer?.username ?? '-'}</td>
+                                    <td>{getStatusName(repairRecord.status)}</td>
+                                    <td>
+                                        <button className='btn-edit' onClick={() => handleEdit(repairRecord.id)}>
+                                            <i className="fa-solid fa-edit mr-2"></i>
+                                            ปรับสถานะ
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                }
             </div>
             <Modal title='ปรับสถานะ' isOpen={showModal} onClose={() => setShowModal(false)}>
                 <div className="flex gap-4">

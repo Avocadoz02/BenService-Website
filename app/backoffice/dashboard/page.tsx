@@ -19,6 +19,8 @@ export default function Page() {
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
     const [selectedChartIncomePerMonth, setSelectedChartIncomePerMonth] = useState(new Date().getFullYear());
+
+    const [loading, setLoading] = useState(false);
     
     const didFetch = useRef(false);
 
@@ -40,8 +42,19 @@ export default function Page() {
     }, []);
     
     const fetchData = async () => {
-        await fetchDataIncomePerDays();
-        await fetchDataChartIncomePerMonth(); // fetch พร้อม render chart  
+        try {
+            setLoading(true);
+            await fetchDataIncomePerDays();
+            await fetchDataChartIncomePerMonth(); // fetch พร้อม render chart  
+        } catch (error: any) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.message
+            });
+        } finally {
+            setLoading(false);
+        }
     };
 
     const fetchDataIncomePerDays = async () => {
@@ -110,8 +123,12 @@ export default function Page() {
             }
         };
         const chartIncomePerDays = document.getElementById('chartIncomePerDays');
+        const oldChartIncomePerDays = document.getElementById('chartIncomePerDays')?.querySelector('.apexcharts-canvas');
 
         if (chartIncomePerDays) {
+            if (oldChartIncomePerDays) {
+                oldChartIncomePerDays.remove();
+            }
             const chart = new Chart(chartIncomePerDays, options);
             chart.render();
         }
@@ -129,8 +146,12 @@ export default function Page() {
             },
         };
         const chartIncomePerMonth = document.getElementById('chartIncomePerMonth');
+        const oldChartIncomePerMonth = document.getElementById('chartIncomePerMonth')?.querySelector('.apexcharts-canvas');
         
         if (chartIncomePerMonth) {
+            if (oldChartIncomePerMonth) {
+                oldChartIncomePerMonth.remove();
+            }
             const chart = new Chart(chartIncomePerMonth, options);
             chart.render();
         }
@@ -145,7 +166,7 @@ export default function Page() {
         const options = {
             chart: { 
                 type: 'pie', 
-                height: 317, 
+                height: 332, 
                 background: 'white' },
             series: data,
             labels: ['งานซ่อมเสร็จ', 'งานกำลังซ่อม', 'งานทั้งหมด'],
@@ -154,10 +175,13 @@ export default function Page() {
             }
         };
         const chartPie = document.getElementById('chartPie');
+        const oldChartPie = document.getElementById('chartPie')?.querySelector('.apexcharts-canvas');
 
         if (chartPie) {
-            const chart = new Chart(chartPie, options);
-            chart.render();
+            if (!oldChartPie) {
+                const chart = new Chart(chartPie, options); 
+                chart.render();
+            }
         }
     };
 
@@ -206,7 +230,10 @@ export default function Page() {
                     แสดงข้อมูล
                 </button>
             </div>
-            <div id="chartIncomePerDays" className="text-gray-800 rounded-lg overflow-hidden"></div>
+            <div className="relative rounded-lg h-[320px] overflow-hidden">
+                {loading ? <div className="absolute skeleton"></div> : ''}
+                <div id="chartIncomePerDays" className="bg-white text-gray-800 overflow-hidden"></div>
+            </div>
 
             <div className="grid grid-cols-3 gap-3">
                 <div className="col-span-2">
@@ -229,9 +256,16 @@ export default function Page() {
                 
                 <div className="text-2xl font-bold mt-5">งานทั้งหมด</div>
                 
-                <div id="chartIncomePerMonth" className="text-gray-800 rounded-lg overflow-hidden col-span-2"></div>
+                <div className='col-span-2 relative rounded-lg h-[320px] overflow-hidden'>
+                    {loading ? <div className="absolute skeleton"></div> : ''}
+                    <div id="chartIncomePerMonth" className="bg-white text-gray-800 rounded-lg overflow-hidden"></div>  
+                </div>
                 
-                <div id="chartPie" className='rounded-t-lg overflow-hidden'></div>
+                <div className='relative rounded-lg h-[320px] overflow-hidden'>
+                    {loading ? <div className="absolute skeleton"></div> : ''}
+                    <div id="chartPie" className='rounded-lg overflow-hidden'></div>
+                </div>
+
             </div>
         </div>
     );

@@ -25,16 +25,8 @@ body {
   font-family: 'Noto Sans Thai Looped', Arial, Helvetica, sans-serif;
 }
 
-button {
-  @apply cursor-pointer transition duration-200;
-}
-
 .form-control {
   @apply border border-gray-300 dark:border-gray-600 p-2 rounded-lg bg-gray-50 dark:bg-gray-700 dark:text-white focus:border-red-400 focus-visible:outline-none;
-}
-
-.btn {
-  @apply bg-red-400 text-white p-2 rounded-full hover:bg-red-500 transition-colors;
 }
 
 .sidebar {
@@ -42,19 +34,19 @@ button {
 }
 
 .sidebar-item {
-  @apply flex items-center p-2 text-gray-300 rounded transition duration-200
-}
+  @apply flex items-center p-2 text-gray-300 rounded transition duration-200;
 
-.sidebar-item.active, .sidebar-item:hover {
-  @apply bg-gray-300 text-gray-800;
+  &.active, &:hover {
+    @apply bg-gray-300 text-gray-800;
+  }
 }
 
 .sidebar-nav {
   @apply grow-1 p-4 bg-gradient-to-t from-gray-700 to-gray-950 border-t border-gray-700 min-h-screen;
-}
 
-.sidebar-hav ul {
-  @apply space-y-2;
+  ul {
+    @apply space-y-2;
+  }
 }
 
 .sidebar-header {
@@ -65,62 +57,59 @@ button {
 
 .card {
   @apply bg-gray-800 p-8 rounded-2xl shadow-md h-full;
-}
+  
+  h1 {
+    @apply text-2xl font-bold text-gray-200 mb-5;
+  }
 
-.card {
-    input, select, textarea {
-      @apply w-full mt-2;
-  } 
-}
+  input, select, textarea { @apply w-full mt-2; }
 
-.card h1 {
-  @apply text-2xl font-bold text-gray-200 mb-5;
+  .card-body{ @apply text-gray-400; }
 }
-
-.card .card-body{
-  @apply text-gray-400;
-}
-
-.btn-primary {
-  @apply bg-red-400 text-white px-4 py-2 rounded-full mt-5 hover:bg-red-500;
-}
-
 
 
 .table {
   @apply w-full mt-3;
+  
+  th {
+    @apply text-center p-4 bg-gray-950 text-gray-400;
+
+    &:first-child { @apply rounded-tl-2xl; }
+    &:last-child { @apply rounded-tr-2xl; }
+  }
+  
+  tbody {
+    tr {
+      td {
+        @apply text-center p-4 bg-gray-900 text-gray-400 border-b border-gray-700;
+
+        &:first-child { @apply text-left; }
+      }
+
+      &:last-child {
+        td {
+          @apply border-b-0;
+          
+          &:first-child { @apply rounded-bl-2xl; }
+          &:last-child { @apply rounded-br-2xl; }
+        }
+      }
+    }
+  }
 }
 
-.table th {
-  @apply text-center p-4 bg-gray-950 text-gray-400;
+
+/* Button */
+button {
+  @apply cursor-pointer transition duration-200;
 }
 
-.table th:first-child {
-  @apply rounded-tl-2xl;
+.btn {
+  @apply bg-red-400 text-white p-2 rounded-full hover:bg-red-500;
 }
 
-.table th:last-child {
-  @apply rounded-tr-2xl;
-}
-
-.table tbody td:first-child {
-  @apply text-left;
-}
-
-.table tbody td {
-  @apply text-center p-4 bg-gray-900 text-gray-400 border-b border-gray-700;
-}
-
-.table tbody tr:last-child td:first-child {
-  @apply rounded-bl-2xl;
-}
-
-.table tbody tr:last-child td:last-child {
-  @apply rounded-br-2xl;
-}
-
-.table tbody tr:last-child td {
-  @apply border-b-0
+.btn-primary {
+  @apply bg-red-400 text-white px-4 py-2 rounded-full mt-5 hover:bg-red-500;
 }
 
 .btn-edit {
@@ -143,4 +132,57 @@ button {
 
 .number-page.active {
   @apply bg-red-500;
+}
+
+
+/* Skeleton */
+.skeleton {
+  @apply bg-gradient-to-r from-gray-600 via-gray-800 to-gray-600 w-full h-full rounded-lg bg-size-[200%_100%];
+  animation: shimmer 2s infinite linear;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 100%;
+  }
+  100% {
+    background-position: -100%;
+  }
+}
+
+
+/* Loading Overlay */
+.overlay {
+  @apply fixed top-0 left-0 w-full h-full z-100;
+	
+	.overlayContent {
+    @apply relative flex flex-col items-center justify-center w-full h-full backdrop-blur-xs bg-[#0000004d];
+	}
+}
+.loader {
+  @apply relative flex items-center justify-center w-[120px] h-[120px] border-5 border-white rounded-[50%] ;
+	border-bottom: 5px solid transparent;
+	animation: spin 1.2s linear infinite;
+	
+  .inner {
+    @apply w-16 h-16 rounded-[50%] border-5 border-t-white! border-r-white!;
+		border: 5px solid transparent;
+		animation: spinInner 1.3s linear infinite;
+	}
+}
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+@keyframes spinInner {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(-720deg);
+	}
 }
