@@ -61,7 +61,7 @@ export function Sidebar() {
         <aside className="sidebar">
             <div className="sidebar-header">
                 <i className="fa-solid fa-user text-4xl mr-5"></i>
-                <h1 className="text-xl font-bold">Bun Service 2025</h1>
+                <h1 className="text-xl font-bold">Ben Service</h1>
             </div>
             <nav className="sidebar-nav gb-gray-950 p-4 rounded-tl-3xl ml-4">
                 <ul>
